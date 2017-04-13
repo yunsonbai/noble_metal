@@ -7,7 +7,6 @@
 <h4>Select time range</h4>
 <div>
     <form action="/pricetime/gold" method="post">
-    {% csrf_token %}
         <dir>
             start time: <input id="start_time" type="date" name="start_time" value="">
         </dir>
@@ -23,8 +22,18 @@
 </div>
 <script type="text/javascript">
     {% if picture %}
+        document.getElementById("picture").innerHTML='';
         document.getElementById("picture").innerHTML='<img src="data:image/png;base64,{{picture}}"/>';
+
     {% endif %}
+    
+    {% if start_time %}
+        document.getElementById("start_time").value="{{start_time}}";
+    {% endif %}
+    {% if end_time %}
+        document.getElementById("end_time").value="{{ end_time}}";
+    {% endif %}
+    
 </script>
 </body>
 </html>

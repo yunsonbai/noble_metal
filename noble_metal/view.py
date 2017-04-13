@@ -3,15 +3,18 @@ import base64
 from rest_framework.views import APIView
 from django.shortcuts import render
 from yuntool.chart import plot
+from django.views.decorators.csrf import csrf_exempt
 from noble_metal.models import GoldPrice as ModelGoldPrice
 from noble_metal.enum import PriceType
 
 
 class GoldPrice(APIView):
 
+    @csrf_exempt
     def get(self, request):
         return render(request, 'goldprice.html')
 
+    @csrf_exempt
     def post(self, request):
         start_time = request.data.get('start_time')
         end_time = request.data.get('end_time')
@@ -34,6 +37,7 @@ class GoldPrice(APIView):
 
         lx = [i for i in range(len(low_sdata))]
         hx = [i for i in range(len(high_sdata))]
+
         y = [
             [float(d[0:-3].replace(':', '.')) for d in high_data[1]],
             [float(d[0:-3].replace(':', '.')) for d in low_data[1]]]
@@ -41,14 +45,14 @@ class GoldPrice(APIView):
             [hx, lx], [y[0], y[1]],
             xlabel=['date', 'date'],
             ylabel=['time', 'time'],
-            title=['high_price_time', 'low_price_time'],
-            xticklabels=[high_data[0], low_data[0]],
-            yticklabels=[high_data[1], low_data[1]])
+            xticks=[high_data[0], low_data[0]],
+            yticks=[high_data[1], low_data[1]],
+            title=['high_price_time', 'low_price_time'])
 
         data = {
             'start_time': start_time,
-            'end_time': end_time,
+            'end_time': '{0}'.format(end_time),
             'picture': base64.b64encode(picture.read())
         }
-        picture.close
+        picture.close()
         return render(request, 'goldprice.html', data)
