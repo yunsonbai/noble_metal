@@ -48,7 +48,8 @@ class GoldPrice(APIView):
             xticks=[high_data[0], low_data[0]],
             yticks=[high_data[1], low_data[1]],
             title=['high_price_time', 'low_price_time'],
-            draw_one=True, label=['high', 'low'])
+            draw_one=True, label=['high', 'low'],
+            dpi=120)
 
         data = {
             'start_time': start_time,
