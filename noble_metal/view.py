@@ -41,12 +41,14 @@ class GoldPrice(APIView):
         y = [
             [float(d[0:-3].replace(':', '.')) for d in high_data[1]],
             [float(d[0:-3].replace(':', '.')) for d in low_data[1]]]
+        # print(high_data[1], low_data[1])
         picture = plot.draw_curve(
             [hx, lx], [y[0], y[1]],
             xlabel=['date', 'date'],
             ylabel=['time', 'time'],
             xticks=[high_data[0], low_data[0]],
-            yticks=[high_data[1], low_data[1]],
+            # yticks=[high_data[1], low_data[1]],
+            stretch=8,
             title=['high_price_time', 'low_price_time'],
             draw_one=True, label=['high', 'low'],
             dpi=120)
