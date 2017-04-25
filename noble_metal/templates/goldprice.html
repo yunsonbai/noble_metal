@@ -17,13 +17,25 @@
             <input type="submit"/>        
         </dir>
     </form>
-    <div id="picture">
+    
+    
+
+    <div>
+        <div id="picture_t" style="display:inline-block">
+        </div>
+        <div id="picture_p" style="display:inline-block">
+        </div>
     </div>
 </div>
 <script type="text/javascript">
-    {% if picture %}
-        document.getElementById("picture").innerHTML='';
-        document.getElementById("picture").innerHTML='<img src="data:image/png;base64,{{picture}}"/>';
+    {% if picture_t %}
+        document.getElementById("picture_t").innerHTML='';
+        document.getElementById("picture_t").innerHTML='<img src="data:image/png;base64,{{picture_t}}"/>';
+
+    {% endif %}
+    {% if picture_p %}
+        document.getElementById("picture_p").innerHTML='';
+        document.getElementById("picture_p").innerHTML='<img src="data:image/png;base64,{{picture_p}}"/>';
 
     {% endif %}
     

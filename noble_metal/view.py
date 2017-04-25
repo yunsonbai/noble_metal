@@ -1,11 +1,8 @@
 # coding=utf-8
-import base64
 from rest_framework.views import APIView
 from django.shortcuts import render
-from yuntool.chart import plot
 from django.views.decorators.csrf import csrf_exempt
-from noble_metal.models import GoldPrice as ModelGoldPrice
-from noble_metal.enum import PriceType
+from noble_metal.utils import data_draw
 
 
 class GoldPrice(APIView):
@@ -20,43 +17,13 @@ class GoldPrice(APIView):
         end_time = request.data.get('end_time')
         if not start_time or not end_time:
             return render(request, 'goldprice.html')
-        high_sdata = ModelGoldPrice.objects.filter(
-            dtype=PriceType.high).filter(
-            date__gte=start_time, date__lte=end_time).order_by(
-            'date').values_list('date', 'time')
-        low_sdata = ModelGoldPrice.objects.filter(
-            dtype=PriceType.low).filter(
-            date__gte=start_time, date__lte=end_time).order_by(
-            'date').values_list('date', 'time')
-        high_data = [
-            [str(d[0]) for d in high_sdata],
-            [str(d[1]) for d in high_sdata]]
-        low_data = [
-            [str(d[0]) for d in low_sdata],
-            [str(d[1]) for d in low_sdata]]
-
-        lx = [i for i in range(len(low_sdata))]
-        hx = [i for i in range(len(high_sdata))]
-
-        y = [
-            [float(d[0:-3].replace(':', '.')) for d in high_data[1]],
-            [float(d[0:-3].replace(':', '.')) for d in low_data[1]]]
-        # print(high_data[1], low_data[1])
-        picture = plot.draw_curve(
-            [hx, lx], [y[0], y[1]],
-            xlabel=['date', 'date'],
-            ylabel=['time', 'time'],
-            xticks=[high_data[0], low_data[0]],
-            # yticks=[high_data[1], low_data[1]],
-            stretch=8,
-            title=['high_price_time', 'low_price_time'],
-            draw_one=True, label=['high', 'low'],
-            dpi=120)
-
+        picture_t = data_draw.get_picture(start_time, end_time)
+        picture_p = data_draw.get_picture(
+            start_time, end_time, ptype='price')
         data = {
             'start_time': start_time,
             'end_time': '{0}'.format(end_time),
-            'picture': base64.b64encode(picture.read())
+            'picture_t': picture_t,
+            'picture_p': picture_p
         }
-        picture.close()
         return render(request, 'goldprice.html', data)
