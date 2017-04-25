@@ -114,6 +114,7 @@ USE_L10N = True
 
 USE_TZ = False
 
+FONT_DIR = BASE_DIR + '/simhei.ttf'
 
 SITUATION = (
     (1000, u'其他'),

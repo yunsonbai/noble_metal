@@ -42,7 +42,7 @@ def _price_time(start_time, end_time):
         stretch=8,
         title=['high_price_time', 'low_price_time'],
         draw_one=True, label=['high', 'low'],
-        dpi=DPI, text=text, fontproperties='/home/baisong/simhei.ttf')
+        dpi=DPI, text=text, fontproperties=settings.FONT_DIR)
     picture_base64 = base64.b64encode(picture.read())
     picture.close()
     return picture_base64
