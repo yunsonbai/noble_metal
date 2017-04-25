@@ -3,6 +3,7 @@ import base64
 from yuntool.chart import plot
 from noble_metal.models import GoldPrice as ModelGoldPrice
 from noble_metal.enum import PriceType
+from django.conf import settings
 
 DPI = 100
 
@@ -11,17 +12,21 @@ def _price_time(start_time, end_time):
     high_sdata = ModelGoldPrice.objects.filter(
         dtype=PriceType.high).filter(
         date__gte=start_time, date__lte=end_time).order_by(
-        'date').values_list('date', 'time')
+        'date').values_list('date', 'time', 'situation')
     low_sdata = ModelGoldPrice.objects.filter(
         dtype=PriceType.low).filter(
         date__gte=start_time, date__lte=end_time).order_by(
-        'date').values_list('date', 'time')
+        'date').values_list('date', 'time', 'situation')
     high_data = [
         [str(d[0]) for d in high_sdata],
         [str(d[1]) for d in high_sdata]]
     low_data = [
         [str(d[0]) for d in low_sdata],
         [str(d[1]) for d in low_sdata]]
+    situation_dict = dict(settings.SITUATION)
+    text = [
+        [situation_dict[d[2]] for d in high_sdata],
+        [situation_dict[d[2]] for d in low_sdata]]
 
     lx = [i for i in range(len(low_sdata))]
     hx = [i for i in range(len(high_sdata))]
@@ -37,7 +42,7 @@ def _price_time(start_time, end_time):
         stretch=8,
         title=['high_price_time', 'low_price_time'],
         draw_one=True, label=['high', 'low'],
-        dpi=DPI)
+        dpi=DPI, text=text, fontproperties='/home/baisong/simhei.ttf')
     picture_base64 = base64.b64encode(picture.read())
     picture.close()
     return picture_base64
